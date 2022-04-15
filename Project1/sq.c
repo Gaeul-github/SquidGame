@@ -2,13 +2,15 @@
 #include <stdlib.h>
 #include <windows.h>
 
+char arr_glass[18][2] = { 0 };
 void init();
 void gotoxy(int, int);
 void titleDraw();
 int menuDraw();
 void infoDraw();
 void gloop();
-//void progress(char[][], int);
+void progress(char[18][2], int);
+
 
 int main() {
     init();
@@ -32,12 +34,12 @@ int main() {
 
 void titleDraw() {
     printf("\n\n\n");
-    printf("     ,--.,--.,--.  ,--. ,----.           ,----.   ,--. ,--.,--.   ,--.,------.    ,---.  ,------. ,--. \n");
-    printf("     |  ||  ||  ,'.|  |'  .-./   ,-----.'  .-./   |  | |  ||   `.'   ||  .-.  \\  /  O  \\ |  .--. '|  | \n");
-    printf(",--. |  ||  ||  |' '  ||  | .---.'-----'|  | .---.|  | |  ||  |'.'|  ||  |  \\  :|  .-.  ||  '--'.'|  | \n");
-    printf("|  '-'  /|  ||  | `   |'  '--'  |       '  '--'  |'  '-'  '|  |   |  ||  '--'  /|  | |  ||  |\\  \\ |  | \n");
-    printf("|  '-'  /|  ||  | `   |'  '--'  |       '  '--'  |'  '-'  '|  |   |  ||  '--'  /|  | |  ||  |\\  \\ |  | \n");
-    printf(" `-----' `--'`--'  `--' `------'         `------'  `-----' `--'   `--'`-------' `--' `--'`--' '--'`--' \n");
+    printf("\t     ,--.,--.,--.  ,--. ,----.           ,----.   ,--. ,--.,--.   ,--.,------.    ,---.  ,------. ,--. \n");
+    printf("\t     |  ||  ||  ,'.|  |'  .-./   ,-----.'  .-./   |  | |  ||   `.'   ||  .-.  \\  /  O  \\ |  .--. '|  | \n");
+    printf("\t,--. |  ||  ||  |' '  ||  | .---.'-----'|  | .---.|  | |  ||  |'.'|  ||  |  \\  :|  .-.  ||  '--'.'|  | \n");
+    printf("\t|  '-'  /|  ||  | `   |'  '--'  |       '  '--'  |'  '-'  '|  |   |  ||  '--'  /|  | |  ||  |\\  \\ |  | \n");
+    printf("\t|  '-'  /|  ||  | `   |'  '--'  |       '  '--'  |'  '-'  '|  |   |  ||  '--'  /|  | |  ||  |\\  \\ |  | \n");
+    printf("\t `-----' `--'`--'  `--' `------'         `------'  `-----' `--'   `--'`-------' `--' `--'`--' '--'`--' \n");
 }
 
 void init() {
@@ -87,19 +89,66 @@ void infoDraw() {
     printf("스페이스바를 누르면 메인화면으로 돌아갑니다..");
 
     while (1) {
-        s = _getch();
+        s = getch();
         if (s == ' ') break;
     }
 }
 
-void gloop() {
+// boolean isDead;
+
+void draw(bridgeLength, playerX, playerY) {
     system("cls");
+    // if (isDead == 1) {
+        //printf("죽었습니다.");
+    //}
+    for (int i = 0; i < bridgeLength; i++) {
+        for (int j = 0; j < 2; j++) {
+            if (playerY < 0) {
+                printf("□");
+            } else {
+                if(playerY != (bridgeLength - (i + 1))) {
+                    printf("□");
+                }
+                else {
+                    if (playerX == j) {
+                        printf("■");
+                    }
+                    else {
+                        printf("□");
+                    }
+                }
+                
+            }
+        }
+        printf("\n");
+    }
+}
+
+void gloop() {
+    
     int index = 17;
     int turn = 17;
     int life = 16;
+    int playerX = 0;
+    int playerY = -1;
+    int bridgeLength = 4;
+    char s;
+    int temp;
+
+    draw(bridgeLength, playerX, playerY);
+    /*
+    boolean bridge[2][2] = {
+        { 0, 0 },
+        { 0, 0 }
+    };
+    */
+    // char arr_glass[2][10] = { 0 };
+
+
+    /*
 
     boolean arr_bool[18][2] = { 1 };
-    char arr_glass[18][2] = { 0 };
+    
     for (int i = 0; i < sizeof(arr_bool); i++) {
         //arr_bool[i][0] = rand().nextBoolean();
         arr_bool[i][1] = !arr_bool[i][0];
@@ -116,11 +165,27 @@ void gloop() {
         gotoxy(45, 10 + i);
         printf("|  □  □  |\n");
     }
+    */
     while (1) {
-
+        s = getch();
+        // -3275-3277
+        // printf("%c", s);
+        if (s == 'a') {
+            // isDead = rand() & 1;
+            playerY++;
+            playerX = 0;
+        }
+        if (s == 'd') {
+            // isDead = rand() & 1;
+            playerY++;
+            playerX = 1;
+        }
+        if (s == 27) break;
+        draw(bridgeLength, playerX, playerY);
     }
 
-    /*while (1) {
+
+   /* while (1) {
        int ch2;
        progress(arr_glass, turn);
        printf("%d번 참가자 도전!\n", 17 - life);
@@ -150,11 +215,11 @@ void gloop() {
        }
     }*/
 }
-/*void progress(char arr_glass[][], int turn) {
+void progress(char arr_glass[18][2], int turn) {
    for (int i = 0; i < sizeof(arr_glass); i++) {
       printf("|");
       for (int j = 0; j < sizeof(arr_glass[i]); j++) {
-         printf("  " + arr_glass[i][j]+"  ");
+         printf("  " + arr_glass[i][j]);
       }
       printf("|");
       if (i == turn + 1)
@@ -162,4 +227,4 @@ void gloop() {
       else
          printf("\n");
    }
-}*/
+}
