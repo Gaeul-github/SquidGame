@@ -1,230 +1,65 @@
 #include<stdio.h>
+/*#include <stdlib.h>
+ rand()%2*/
 #include <stdlib.h>
-#include <windows.h>
-
-char arr_glass[18][2] = { 0 };
-void init();
-void gotoxy(int, int);
-void titleDraw();
-int menuDraw();
-void infoDraw();
-void gloop();
-void progress(char[18][2], int);
-
-
+void draw(int su, int x, int y);
+void end();
 int main() {
-    init();
+    int x = 0; //x 좌표
+    int y = -1; //y 좌표
+    int su = 12; //다리 길이
+    char s;
+
+    draw(su, x, y);
+
     while (1) {
-        system("cls");
-        ;      titleDraw();
-        int menuCode = menuDraw();
-        if (menuCode == 1) {   //게임시작
-            gloop();
+        s = getch(); //키보드로 입력받는 값을 s에 저장
+        if (s == 75) { //왼쪽
+            //x == 열, y == 행
+            //왼쪽 화살표를 누르면 첫번째 열의 네모가 1칸 올라간다
+            x = 0;
+            y++;
         }
-        else if (menuCode == 2) {   //게임방법
-            infoDraw();
+        if (s == 77) { //오른쪽
+            //x == 열, y == 행
+            //오른쪽 화살표를 누르면 두번째 열의 네모가 1칸 올라간다
+            x = 1;
+            y++;
         }
-        else {
-            break;
-        }
+        if (s == 27) break; //esc 누르면 종료
+        draw(su, x, y);
     }
 
     return 0;
 }
-
-void titleDraw() {
-    printf("\n\n\n");
-    printf("\t     ,--.,--.,--.  ,--. ,----.           ,----.   ,--. ,--.,--.   ,--.,------.    ,---.  ,------. ,--. \n");
-    printf("\t     |  ||  ||  ,'.|  |'  .-./   ,-----.'  .-./   |  | |  ||   `.'   ||  .-.  \\  /  O  \\ |  .--. '|  | \n");
-    printf("\t,--. |  ||  ||  |' '  ||  | .---.'-----'|  | .---.|  | |  ||  |'.'|  ||  |  \\  :|  .-.  ||  '--'.'|  | \n");
-    printf("\t|  '-'  /|  ||  | `   |'  '--'  |       '  '--'  |'  '-'  '|  |   |  ||  '--'  /|  | |  ||  |\\  \\ |  | \n");
-    printf("\t|  '-'  /|  ||  | `   |'  '--'  |       '  '--'  |'  '-'  '|  |   |  ||  '--'  /|  | |  ||  |\\  \\ |  | \n");
-    printf("\t `-----' `--'`--'  `--' `------'         `------'  `-----' `--'   `--'`-------' `--' `--'`--' '--'`--' \n");
-}
-
-void init() {
-    system("mode con cols=120 lines=30 | title 게임제목");
-
-    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE); //콘솔 핸들 가져오기
-    CONSOLE_CURSOR_INFO ConsoleCursor;
-    ConsoleCursor.bVisible = 0;
-    ConsoleCursor.dwSize = 1;
-    SetConsoleCursorInfo(consoleHandle, &ConsoleCursor);
-}
-int menuDraw() {
-    int a;
-    int x = 55;
-    int y = 20;
-    gotoxy(x, y);
-    printf("1. 게임시작\n");
-    gotoxy(x, y + 1);
-    printf("2. 게임방법\n");
-    gotoxy(x, y + 2);
-    printf("3. 종료\n");
-    gotoxy(x, y + 3);
-    scanf_s("%d", &a);
-    return a;
-}
-
-void gotoxy(int x, int y) {
-    HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);   //콘솔 핸들 가져오기
-    COORD pos;
-    pos.X = x;
-    pos.Y = y;
-    SetConsoleCursorPosition(consoleHandle, pos);
-}
-
-void infoDraw() {
-    system("cls");
-    int x = 45;
-    int y = 10;
-    char s;
-    gotoxy(x, y - 1);
-    printf("징검다리 게임 방법");
-    gotoxy(x, y + 1);
-    printf("안깨진 징검다리는 뭐게요~\n");
-    gotoxy(x, y + 2);
-    printf("죽지 말고, 끝까지 징검다리를 건너세요!\n");
-    gotoxy(x, y + 4);
-    printf("스페이스바를 누르면 메인화면으로 돌아갑니다..");
-
-    while (1) {
-        s = getch();
-        if (s == ' ') break;
-    }
-}
-
-// boolean isDead;
-
-void draw(bridgeLength, playerX, playerY) {
-    system("cls");
-    // if (isDead == 1) {
-        //printf("죽었습니다.");
-    //}
-    for (int i = 0; i < bridgeLength; i++) {
+void draw(int su, int x, int y) {
+    system("cls"); //콘솔창 초기화
+    int a = 0;
+    for (int i = 0; i < su; i++) {
         for (int j = 0; j < 2; j++) {
-            if (playerY < 0) {
+            if (y != su - (i + 1)) { //y가 su - (i + 1)이랑 같지 않으면 □ 출력
                 printf("□");
-            } else {
-                if(playerY != (bridgeLength - (i + 1))) {
-                    printf("□");
+            }
+            else if (x == j) { //x와 j가 같으면 ■ 출력
+                printf("■");
+                a = rand() % 5;
+                if (a == 0) {
+                    end();
                 }
                 else {
-                    if (playerX == j) {
-                        printf("■");
-                    }
-                    else {
-                        printf("□");
-                    }
+
                 }
-                
+
+            }
+            else {
+                printf("□");
             }
         }
         printf("\n");
     }
 }
-
-void gloop() {
-    
-    int index = 17;
-    int turn = 17;
-    int life = 16;
-    int playerX = 0;
-    int playerY = -1;
-    int bridgeLength = 4;
-    char s;
-    int temp;
-
-    draw(bridgeLength, playerX, playerY);
-    /*
-    boolean bridge[2][2] = {
-        { 0, 0 },
-        { 0, 0 }
-    };
-    */
-    // char arr_glass[2][10] = { 0 };
-
-
-    /*
-
-    boolean arr_bool[18][2] = { 1 };
-    
-    for (int i = 0; i < sizeof(arr_bool); i++) {
-        //arr_bool[i][0] = rand().nextBoolean();
-        arr_bool[i][1] = !arr_bool[i][0];
-        for (int j = 0; j < sizeof(arr_bool[i]); j++) {
-            arr_glass[i][j] = "□";
-        }
-    }
-
-    printf("\n\n\n");
-    gotoxy(45, 5);
-    gotoxy(45, 5);
-    printf("오징어 게임 징검 다리 건너기\n\n");
-    for (int i = 0; i < 10; i++) {
-        gotoxy(45, 10 + i);
-        printf("|  □  □  |\n");
-    }
-    */
-    while (1) {
-        s = getch();
-        // -3275-3277
-        // printf("%c", s);
-        if (s == 'a') {
-            // isDead = rand() & 1;
-            playerY++;
-            playerX = 0;
-        }
-        if (s == 'd') {
-            // isDead = rand() & 1;
-            playerY++;
-            playerX = 1;
-        }
-        if (s == 27) break;
-        draw(bridgeLength, playerX, playerY);
-    }
-
-
-   /* while (1) {
-       int ch2;
-       progress(arr_glass, turn);
-       printf("%d번 참가자 도전!\n", 17 - life);
-       printf("당신의 선택은?\n1.왼쪽 2. 오른쪽\n");
-       scanf_s("%d", &ch2);
-       if (ch2 == 1 | ch2 == 2) {
-          if (arr_bool[index][ch2 - 1] == 1) {
-             printf("성공!\n");
-             index--;
-             turn--;
-          }
-          else {
-             printf("사망!\n");
-             arr_glass[index][ch2 - 1] = ' ';
-             index = 17;
-             turn = 17;
-             life--;
-          }
-       }
-       if (life == 0) {
-          printf("게임오버!\n");
-          break;
-       }
-       if (turn == -1) {
-          printf("우승!!!\n");
-          break;
-       }
-    }*/
-}
-void progress(char arr_glass[18][2], int turn) {
-   for (int i = 0; i < sizeof(arr_glass); i++) {
-      printf("|");
-      for (int j = 0; j < sizeof(arr_glass[i]); j++) {
-         printf("  " + arr_glass[i][j]);
-      }
-      printf("|");
-      if (i == turn + 1)
-         printf("<--------현위치\n");
-      else
-         printf("\n");
-   }
+void end() {
+    system("cls");
+    printf("죽었습니다.");
+    exit(1);
 }
